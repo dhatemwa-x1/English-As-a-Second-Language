@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive ESL Curriculum for Sudanese Women</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Soft Accents -->
+    <!-- Application Structure Plan: A thematic, tab-based single-page application. The top navigation allows users to jump between an 'Overview' and a detailed 'Weekly Plan'. The 'Weekly Plan' section uses a secondary sidebar navigation to explore each of the 7 weeks. This structure was chosen to break down the dense, linear report into manageable, thematic chunks. It allows a user to either get a high-level summary or dive deep into a specific week's activities without endless scrolling. Interactivity is focused on revealing details (like linguistic focus or key activities) on click, making the experience exploratory rather than passive. This user-centric design prioritizes clarity and ease of navigation over mirroring the report's original format. -->
+    <!-- Visualization & Content Choices: Report Info: Course structure -> Goal: Show weekly skill progression -> Viz/Presentation: Interactive Bar Chart (Chart.js) -> Interaction: Hover to see skill focus -> Justification: Visually represents the increasing complexity and shifting focus of skills over the 7 weeks, making the curriculum's design more intuitive. Report Info: Weekly themes & objectives -> Goal: Organize complex weekly plans -> Viz/Presentation: Tabbed content cards (HTML/CSS/JS) -> Interaction: Click tabs for 'Objectives', 'Linguistic Focus', 'Key Activities' -> Justification: Condenses large amounts of text into an organized, interactive format, preventing information overload and allowing users to focus on one aspect at a time. Report Info: Pedagogical Framework -> Goal: Explain core concepts -> Viz/Presentation: Icon-based feature list (HTML/CSS) -> Interaction: Static, clear display -> Justification: Uses visual cues to make abstract concepts like 'Learner-Centered' and 'Culturally Responsive' more digestible and scannable. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .nav-active {
+            background-color: #D6A386;
+            color: #FFFFFF;
+        }
+        .nav-inactive {
+            background-color: #FFFFFF;
+            color: #D6A386;
+            border: 1px solid #D6A386;
+        }
+        .tab-active {
+            border-bottom: 2px solid #D6A386;
+            color: #4A4A4A;
+            font-weight: 600;
+        }
+        .tab-inactive {
+            color: #9B9B9B;
+        }
+        .content-card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease;
+        }
+        .content-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="min-h-screen">
+        <header class="bg-white shadow-sm sticky top-0 z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-[#4A4A4A]">ESL Curriculum Dashboard</h1>
+                <nav class="hidden md:flex space-x-4">
+                    <button onclick="showView('overview')" id="nav-overview" class="px-4 py-2 rounded-full text-sm font-medium nav-active">Overview</button>
+                    <button onclick="showView('weekly-plan')" id="nav-weekly-plan" class="px-4 py-2 rounded-full text-sm font-medium nav-inactive">Weekly Plan</button>
+                </nav>
+                <div class="md:hidden">
+                    <select onchange="showView(this.value)" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        <option value="overview" selected>Overview</option>
+                        <option value="weekly-plan">Weekly Plan</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <div id="overview-view">
+                <section id="introduction" class="mb-12">
+                    <h2 class="text-3xl font-bold mb-4 text-center">A Culturally Responsive C1 English Curriculum for Sudanese Women</h2>
+                    <p class="text-lg text-center max-w-3xl mx-auto">This interactive dashboard provides a comprehensive overview of the 7-week, culturally responsive English language course. The curriculum is designed to create a supportive and collaborative learning environment, valuing the learners' cultural backgrounds as a foundational asset for acquiring advanced C1-level proficiency.</p>
+                </section>
+
+                <section id="philosophy" class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="content-card p-6">
+                        <h3 class="text-xl font-semibold mb-3">Course Vision</h3>
+                        <p>To extend beyond linguistic instruction, fostering a supportive environment where participants explore identities, share experiences, and build practical skills for their personal and professional futures.</p>
+                    </div>
+                    <div class="content-card p-6">
+                        <h3 class="text-xl font-semibold mb-3">Pedagogical Framework</h3>
+                        <p>Benchmarked at a "toned-down C1" level, focusing on practical application of high-level skills. The approach is learner-centered, using authentic contexts to build confidence and strategic competence.</p>
+                    </div>
+                    <div class="content-card p-6">
+                        <h3 class="text-xl font-semibold mb-3">Task-Based Learning</h3>
+                        <p>Employs a task-based methodology where language is a tool to accomplish meaningful goals. This integrates reading, writing, listening, and speaking into cohesive, real-world activities.</p>
+                    </div>
+                </section>
+
+                <section id="skills-progression" class="content-card p-6">
+                    <h2 class="text-2xl font-bold mb-4 text-center">Weekly Skills Progression</h2>
+                    <p class="text-center mb-6 max-w-2xl mx-auto">The curriculum is carefully scaffolded, moving from personal and internal themes to broader societal and professional engagement. This chart visualizes the shifting focus on different skill domains each week, demonstrating a balanced and progressive learning journey.</p>
+                    <div class="chart-container relative h-96 max-h-[400px] w-full max-w-3xl mx-auto">
+                        <canvas id="skillsChart"></canvas>
+                    </div>
+                </section>
+            </div>
+
+            <div id="weekly-plan-view" class="hidden">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <aside class="md:w-1/4">
+                        <h2 class="text-2xl font-bold mb-4">Weekly Themes</h2>
+                        <nav id="weekly-nav" class="flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible pb-2 md:pb-0">
+                        </nav>
+                    </aside>
+                    <div id="weekly-content" class="md:w-3/4">
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const weeklyData = [
+            {
+                id: 'week1',
+                title: 'Week 1: Identity & Storytelling',
+                theme: 'Crafting Complex Narratives',
+                objectives: [
+                    "Analyze authentic texts for narrative structure and authorial tone.",
+                    "Control advanced narrative tenses and reported speech.",
+                    "Produce a well-structured personal narrative using descriptive lexis."
+                ],
+                linguisticFocus: {
+                    grammar: "Review of narrative tenses; Introduction to inversion with negative adverbials (e.g., 'No sooner had I...') for dramatic effect.",
+                    lexis: "Vocabulary for character traits, emotions, and literary elements (e.g., 'protagonist', 'foreshadowing')."
+                },
+                activities: [
+                    { name: "Text Deconstruction", desc: "Analyze a C1-level short story, mapping the plot and identifying tense usage." },
+                    { name: "Grammar in Context", desc: "Complete sentence transformation exercises using inversion for emphasis." },
+                    { name: "Capstone Task: The Pivotal Moment", desc: "Write a 400-word narrative about a pivotal life moment, demonstrating command of narrative tenses and stylistic inversion." }
+                ]
+            },
+            {
+                id: 'week2',
+                title: 'Week 2: Community & Cuisine',
+                theme: 'The Language of Description and Process',
+                objectives: [
+                    "Analyze culinary reviews to understand persuasive descriptive language.",
+                    "Master imperative forms and discourse markers for sequencing.",
+                    "Produce a detailed descriptive-procedural text with rich sensory vocabulary."
+                ],
+                linguisticFocus: {
+                    grammar: "Compound adjectives (e.g., 'mouth-watering') and modifying gradable/ungradable adjectives (e.g., 'absolutely delicious').",
+                    lexis: "Sophisticated vocabulary for tastes, textures, and cooking processes; Food-related idioms."
+                },
+                activities: [
+                    { name: "Review Analysis", desc: "Compare contrasting restaurant reviews to identify tone-setting language." },
+                    { name: "Lexical Sets", desc: "Engage in vocabulary-building activities, creating mind maps of sensory words and collocations." },
+                    { name: "Capstone Task: 'Signature Dish' Guide", desc: "Write a 400-word piece for a food magazine, combining a descriptive introduction with a clear recipe." }
+                ]
+            },
+            {
+                id: 'week3',
+                title: 'Week 3: Journeys & Transitions',
+                theme: 'Navigating Formal Systems',
+                objectives: [
+                    "Comprehend complex information from official forms and regulations.",
+                    "Use advanced question forms and distancing language for formal inquiries.",
+                    "Role-play a complex transactional scenario with precision."
+                ],
+                linguisticFocus: {
+                    grammar: "Distancing language (e.g., 'It is claimed that...'); Participle clauses for concise information (e.g., 'Following the instructions...').",
+                    lexis: "Specialized terminology for banking, healthcare, and official procedures."
+                },
+                activities: [
+                    { name: "Authentic Text Comprehension", desc: "Analyze sections of a rental agreement or visa application guide." },
+                    { name: "Formal Role-Play", desc: "Simulate a phone call to a government agency or bank to resolve a complex issue." },
+                    { name: "Capstone Task: Formal Letter of Inquiry", desc: "Write a 250-word formal letter or email requesting detailed information about a complex process." }
+                ]
+            },
+            {
+                id: 'week4',
+                title: 'Week 4: Ambition & Enterprise',
+                theme: 'The Language of Professional Success',
+                objectives: [
+                    "Analyze professional texts like job descriptions and business reports.",
+                    "Master the STAR method for interviews using strong action verbs.",
+                    "Write a persuasive and well-structured professional proposal or report."
+                ],
+                linguisticFocus: {
+                    grammar: "Advanced passives (e.g., 'The system is being upgraded') and causative have/get (e.g., 'We had the report reviewed').",
+                    lexis: "Professional action verbs (e.g., 'spearheaded', 'streamlined'); Business and economic concepts."
+                },
+                activities: [
+                    { name: "Case Study Analysis", desc: "Analyze a business case study's structure and use of passive voice for objectivity." },
+                    { name: "Interview Clinic", desc: "Practice the STAR method to answer challenging behavioral interview questions." },
+                    { name: "Capstone Task: Professional Proposal", desc: "Write a 400-word proposal for a new initiative, structured with headings and using formal, persuasive language." }
+                ]
+            },
+            {
+                id: 'week5',
+                title: 'Week 5: Health & Wellbeing',
+                theme: 'The Language of Advice and Nuance',
+                objectives: [
+                    "Understand main ideas and details in complex health-related texts.",
+                    "Use modal verbs and hedging language to give advice and discuss probability.",
+                    "Accurately report information and advice using various reporting verbs."
+                ],
+                linguisticFocus: {
+                    grammar: "Modals in the past for speculation and criticism (e.g., 'should have'); Patterns with reporting verbs (e.g., 'suggested that...').",
+                    lexis: "Nuanced vocabulary for symptoms, diagnosis, and treatment; Health-related collocations."
+                },
+                activities: [
+                    { name: "Reading & Synthesis", desc: "Read and synthesize two articles presenting different perspectives on a health topic." },
+                    { name: "Problem-Solving Scenarios", desc: "Discuss complex health-related dilemmas in groups, using modals and hedging language." },
+                    { name: "Capstone Task: Health Advice Column", desc: "Write a 250-word response to a letter in a health advice column, offering well-structured advice." }
+                ]
+            },
+            {
+                id: 'week6',
+                title: 'Week 6: Perspectives & Debates',
+                theme: 'The Art of Argumentation',
+                objectives: [
+                    "Analyze opinion articles to identify author's stance, tone, and rhetorical devices.",
+                    "Structure a coherent argument using discourse markers and hedging language.",
+                    "Participate effectively in a formal debate, defending a point of view."
+                ],
+                linguisticFocus: {
+                    grammar: "Cleft sentences for emphasis (e.g., 'It's the lack of funding that...'); Advanced discourse markers for concession and counterargument.",
+                    lexis: "Vocabulary for argumentation and critical thinking (e.g., 'fallacy', 'premise'); Phrases for polite agreement/disagreement."
+                },
+                activities: [
+                    { name: "Rhetorical Analysis", desc: "Analyze an opinion editorial to identify persuasive linguistic choices." },
+                    { name: "Argument Structuring", desc: "Organize points into a logical argument using appropriate discourse markers." },
+                    { name: "Capstone Task: Formal Moderated Debate", desc: "Engage in a structured debate, assessed on clarity, language use, and respectful tone." }
+                ]
+            },
+            {
+                id: 'week7',
+                title: 'Week 7: Future Visions',
+                theme: 'C1 Capstone Showcase',
+                objectives: [
+                    "Independently research, structure, and write a script for a complex presentation.",
+                    "Deliver a clear, engaging, and well-structured presentation.",
+                    "Respond fluently and spontaneously to follow-up questions."
+                ],
+                linguisticFocus: {
+                    grammar: "Synthesis of all C1 grammar, lexis, and functional language from Weeks 1-6.",
+                    lexis: "Focus on flexible and accurate application of all previously learned vocabulary in a high-level productive task."
+                },
+                activities: [
+                    { name: "Project Selection & Proposal", desc: "Choose a capstone project (e.g., business pitch, community proposal) and submit an outline." },
+                    { name: "Presentation Workshop", desc: "Dedicated class time for project work with one-on-one coaching and peer-review sessions." },
+                    { name: "Capstone Task: The C1 Showcase", desc: "Deliver a 7-10 minute presentation followed by a Q&A session, assessed on a comprehensive rubric." }
+                ]
+            }
+        ];
+
+        function showView(viewId) {
+            document.getElementById('overview-view').classList.add('hidden');
+            document.getElementById('weekly-plan-view').classList.add('hidden');
+            document.getElementById('nav-overview').classList.replace('nav-active', 'nav-inactive');
+            document.getElementById('nav-weekly-plan').classList.replace('nav-active', 'nav-inactive');
+            
+            document.getElementById(`${viewId}-view`).classList.remove('hidden');
+            document.getElementById(`nav-${viewId}`).classList.replace('nav-inactive', 'nav-active');
+        }
+
+        function selectWeek(weekId) {
+            const weeklyNav = document.getElementById('weekly-nav');
+            Array.from(weeklyNav.children).forEach(btn => {
+                btn.classList.remove('bg-gray-200', 'font-semibold');
+                btn.classList.add('bg-white');
+            });
+            document.getElementById(`nav-btn-${weekId}`).classList.add('bg-gray-200', 'font-semibold');
+            document.getElementById(`nav-btn-${weekId}`).classList.remove('bg-white');
+
+            const week = weeklyData.find(w => w.id === weekId);
+            const contentDiv = document.getElementById('weekly-content');
+            
+            contentDiv.innerHTML = `
+                <div class="content-card p-6">
+                    <h3 class="text-3xl font-bold mb-2">${week.title}</h3>
+                    <p class="text-lg text-gray-600 mb-6">${week.theme}</p>
+                    
+                    <div class="border-b border-gray-200 mb-4">
+                        <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                            <button onclick="showTabContent('${week.id}', 'objectives')" id="tab-${week.id}-objectives" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm tab-active">Objectives</button>
+                            <button onclick="showTabContent('${week.id}', 'linguistic')" id="tab-${week.id}-linguistic" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm tab-inactive">Linguistic Focus</button>
+                            <button onclick="showTabContent('${week.id}', 'activities')" id="tab-${week.id}-activities" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm tab-inactive">Key Activities</button>
+                        </nav>
+                    </div>
+
+                    <div id="content-${week.id}-objectives">
+                        <ul class="list-disc list-inside space-y-2">
+                            ${week.objectives.map(obj => `<li>${obj}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div id="content-${week.id}-linguistic" class="hidden">
+                        <div class="mb-4">
+                            <h4 class="font-semibold text-md">Grammar:</h4>
+                            <p>${week.linguisticFocus.grammar}</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-md">Lexis:</h4>
+                            <p>${week.linguisticFocus.lexis}</p>
+                        </div>
+                    </div>
+                    <div id="content-${week.id}-activities" class="hidden">
+                        <div class="space-y-4">
+                            ${week.activities.map(act => `
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <h4 class="font-semibold">${act.name}</h4>
+                                    <p class="text-sm text-gray-600">${act.desc}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function showTabContent(weekId, tabId) {
+            ['objectives', 'linguistic', 'activities'].forEach(id => {
+                document.getElementById(`content-${weekId}-${id}`).classList.add('hidden');
+                document.getElementById(`tab-${weekId}-${id}`).classList.replace('tab-active', 'tab-inactive');
+            });
+            document.getElementById(`content-${weekId}-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tab-${weekId}-${tabId}`).classList.replace('tab-inactive', 'tab-active');
+        }
+
+        function initializeWeeklyNav() {
+            const navContainer = document.getElementById('weekly-nav');
+            weeklyData.forEach(week => {
+                const button = document.createElement('button');
+                button.id = `nav-btn-${week.id}`;
+                button.className = 'w-full text-left p-3 rounded-lg transition-colors duration-200 bg-white hover:bg-gray-100 whitespace-nowrap md:whitespace-normal mr-2 md:mr-0 mb-2';
+                button.textContent = week.title.split(':')[0];
+                button.onclick = () => selectWeek(week.id);
+                navContainer.appendChild(button);
+            });
+        }
+
+        window.onload = function() {
+            const ctx = document.getElementById('skillsChart').getContext('2d');
+            const skillsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7'],
+                    datasets: [
+                        {
+                            label: 'Personal & Narrative',
+                            data: [5, 3, 1, 2, 2, 1, 4],
+                            backgroundColor: '#E5BFB3',
+                        },
+                        {
+                            label: 'Descriptive & Procedural',
+                            data: [2, 5, 2, 1, 3, 1, 2],
+                            backgroundColor: '#D6A386',
+                        },
+                        {
+                            label: 'Formal & Transactional',
+                            data: [1, 1, 5, 4, 3, 2, 3],
+                            backgroundColor: '#A27B65',
+                        },
+                        {
+                            label: 'Professional & Persuasive',
+                            data: [0, 0, 2, 5, 1, 5, 5],
+                            backgroundColor: '#6D5344',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            stacked: true,
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Relative Skill Focus'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+
+            initializeWeeklyNav();
+            selectWeek('week1');
+        };
+    </script>
+</body>
+</html>
